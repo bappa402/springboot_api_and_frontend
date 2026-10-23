@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BMI Calculator</title>
+</head>
+<body>
+
+    <h2>BMI Calculator</h2>
+
+    <form id="bmiForm">
+        <p>
+            <label for="weight">Weight (kg):</label><br>
+            <input type="number" id="weight" step="0.1" required>
+        </p>
+        <p>
+            <label for="height">Height (meters):</label><br>
+            <input type="number" id="height" step="0.01" required>
+        </p>
+        <p>
+            <button type="submit">Calculate</button>
+        </p>
+    </form>
+
+    <p id="error" style="color: red;"></p>
+
+    <div id="result" style="display: none;">
+        <h3>Result</h3>
+        <p>BMI: <span id="bmiVal"></span></p>
+        <p>Body Type: <span id="typeVal"></span></p>
+    </div>
+
+    <script>
+        document.getElementById('bmiForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const weight = document.getElementById('weight').value;
+            const height = document.getElementById('height').value;
+            const errorP = document.getElementById('error');
+            const resultDiv = document.getElementById('result');
+
+            errorP.textContent = '';
+            resultDiv.style.display = 'none';
+
+            try {
+                const response = await fetch(`http://localhost:8080/api/bmi?weight=${weight}&height=${height}`);
+                
+                if (!response.ok) {
+                    throw new Error('Calculation failed. Check your inputs.');
+                }
+
+                const data = await response.json();
+
+                document.getElementById('bmiVal').textContent = data.bmi;
+                document.getElementById('typeVal').textContent = data.bodyType;
+                resultDiv.style.display = 'block';
+
+            } catch (err) {
+                errorP.textContent = 'Error: Could not connect to backend.';
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>number analyser</title>
+</head>
+<body>
+
+    <h2>number analyser</h2>
+
+    <form id="numberForm">
+        
+        <p>
+            <label >enter number:</label><br>
+            <input type="number" id="enteredNum" step="0.01" required>
+        </p>
+        <p>
+            <button type="submit">Calculate</button>
+        </p>
+    </form>
+
+    <p id="error" style="color: red;"></p>
+
+    <div id="result" style="display: none;">
+        <h3>Result</h3>
+        <p>Sign:  <span id="signVal"></span></p>
+        <p>no of digits: <span id="digiVal"></span></p>
+    </div>
+
+    <script>
+        document.getElementById('numberForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const enteredNum = document.getElementById('enteredNum').value;
+            const errorP = document.getElementById('error');
+            const resultDiv = document.getElementById('result');
+
+            errorP.textContent = '';
+            resultDiv.style.display = 'none';
+
+            try {
+                const response = await fetch(`http://localhost:8080/api/analyse-number?number=${enteredNum}`);
+                
+				console.log(response);
+                if (!response.ok) {
+                    throw new Error('Calculation failed. Check your inputs.');
+                }
+
+                const data = await response.json();
+
+                document.getElementById('signVal').textContent = data.numberType;
+                document.getElementById('digiVal').textContent = data.numberOfDigits;
+                resultDiv.style.display = 'block';
+
+            } catch (err) {
+                errorP.textContent = 'Error: Could not connect to backend.';
+            }
+        });
+    </script>
+
+</body>
+</html>

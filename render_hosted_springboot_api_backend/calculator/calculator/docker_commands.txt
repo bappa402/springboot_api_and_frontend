@@ -1,0 +1,13 @@
+
+docker build -t bpbn402/bainworks:v1 .
+docker run -p 8080:8080 bpbn402/bainworks:v1
+
+docker images
+docker ps
+
+
+docker login
+docker push bpbn402/bainworks:v1
+
+
+curl -X POST "https://api.render.com/deploy/srv-d8rbc2favr4c73ebrbsg?key=YDfeoYE7coE"
